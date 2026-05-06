@@ -1,26 +1,61 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { PaginaMonitoreo } from './pages/PaginaMonitoreo';
-import { PaginaReportes } from './pages/PaginaReportes';
-import { PaginaAlertas } from './pages/PaginaAlertas';
-import './styles/variables.css';
+// App.jsx — Router principal con autenticación y rutas protegidas
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+
+import NavbarPrincipal from './components/organisms/NavbarPrincipal';
+import PaginaLogin from './pages/PaginaLogin';
+import PaginaMonitoreo from './pages/PaginaMonitoreo';
+import PaginaNotificaciones from './pages/PaginaNotificaciones';
+import PaginaAlertas from './pages/PaginaAlertas';
+
+import './index.css';
+
+// Ruta protegida — redirige a login si no autenticado
+const RutaProtegida = ({ children }) => {
+  const { usuario } = useAuth();
+  return usuario ? children : <Navigate to="/login" replace />;
+};
+
+// Layout con Navbar + contenido
+const LayoutConNavbar = () => {
+  const [notifsNoLeidas, setNotifsNoLeidas] = useState(0);
+
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <NavbarPrincipal notifsNoLeidas={notifsNoLeidas} />
+      <main style={{ flex: 1, background: 'var(--color-bg)' }}>
+        <Routes>
+          <Route path="/monitoreo" element={<PaginaMonitoreo />} />
+          <Route path="/notificaciones" element={<PaginaNotificaciones onNotifsChange={setNotifsNoLeidas} />} />
+          <Route path="/alertas" element={<PaginaAlertas />} />
+          <Route path="*" element={<Navigate to="/monitoreo" replace />} />
+        </Routes>
+      </main>
+    </div>
+  );
+};
 
 function App() {
   return (
-    <Router>
-      <nav style={{ padding: '20px', background: 'var(--azul-muni)', color: 'white', display: 'flex', gap: '20px' }}>
-        <Link to="/" style={{ color: 'white', textDecoration: 'none', fontWeight: 'bold' }}>🌍 Monitoreo</Link>
-        <Link to="/reportes" style={{ color: 'white', textDecoration: 'none', fontWeight: 'bold' }}>📝 Reportar Foco</Link>
-        <Link to="/alertas" style={{ color: 'white', textDecoration: 'none', fontWeight: 'bold' }}>🔔 Gestión de Alertas</Link>
-      </nav>
-      <main style={{ padding: '20px' }}>
+    <AuthProvider>
+      <Router>
         <Routes>
-          <Route path="/" element={<PaginaMonitoreo />} />
-          <Route path="/reportes" element={<PaginaReportes />} />
-          <Route path="/alertas" element={<PaginaAlertas />} />
+          {/* Ruta pública */}
+          <Route path="/login" element={<PaginaLogin />} />
+
+          {/* Rutas protegidas */}
+          <Route
+            path="/*"
+            element={
+              <RutaProtegida>
+                <LayoutConNavbar />
+              </RutaProtegida>
+            }
+          />
         </Routes>
-      </main>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 }
 

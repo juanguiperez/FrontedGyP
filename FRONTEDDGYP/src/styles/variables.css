@@ -1,0 +1,77 @@
+/* ============================================================
+   DESIGN SYSTEM — Sistema de Gestión y Prevención de Incendios
+   Tema: Dark Fire — Sur de Chile
+   ============================================================ */
+
+:root {
+  /* ── Colores base ── */
+  --color-bg:         #090c12;
+  --color-surface:    #111827;
+  --color-surface-2:  #1a2236;
+  --color-border:     #1e2d45;
+  --color-border-2:   #253655;
+
+  /* ── Fuego / Acción ── */
+  --color-primary:    #f97316;
+  --color-primary-2:  #fb923c;
+  --color-primary-glow: rgba(249, 115, 22, 0.25);
+
+  /* ── Estados ── */
+  --color-danger:     #ef4444;
+  --color-danger-dim: rgba(239, 68, 68, 0.15);
+  --color-warning:    #f59e0b;
+  --color-warning-dim: rgba(245, 158, 11, 0.15);
+  --color-success:    #22c55e;
+  --color-success-dim: rgba(34, 197, 94, 0.15);
+  --color-info:       #38bdf8;
+  --color-info-dim:   rgba(56, 189, 248, 0.15);
+
+  /* ── Texto ── */
+  --color-text:       #e2e8f0;
+  --color-text-2:     #94a3b8;
+  --color-muted:      #475569;
+
+  /* ── Gradientes ── */
+  --grad-fire:        linear-gradient(135deg, #dc2626 0%, #f97316 50%, #fbbf24 100%);
+  --grad-nav:         linear-gradient(180deg, #0d1526 0%, #090c12 100%);
+  --grad-card:        linear-gradient(145deg, #111827, #1a2236);
+  --grad-danger:      linear-gradient(135deg, #7f1d1d, #ef4444);
+
+  /* ── Sombras ── */
+  --shadow-sm:   0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:   0 4px 16px rgba(0,0,0,0.5);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,0.6);
+  --shadow-fire: 0 0 20px rgba(249, 115, 22, 0.3);
+  --shadow-danger: 0 0 20px rgba(239, 68, 68, 0.35);
+
+  /* ── Espaciado ── */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  /* ── Radios ── */
+  --r-sm:  6px;
+  --r-md:  10px;
+  --r-lg:  16px;
+  --r-xl:  24px;
+  --r-full: 9999px;
+
+  /* ── Tipografía ── */
+  --font-sans:  'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
+
+  /* ── Transiciones ── */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* ── Navbar ── */
+  --navbar-height: 64px;
+  --sidebar-width: 240px;
+}
