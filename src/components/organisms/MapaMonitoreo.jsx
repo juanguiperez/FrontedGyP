@@ -1,5 +1,6 @@
 // MapaMonitoreo — Mapa Leaflet con GeoJSON y marcadores de focos
 import React, { useEffect } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import {
   MapContainer, TileLayer, Marker, Popup,
   GeoJSON, ZoomControl, useMap,
@@ -7,6 +8,18 @@ import {
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import BadgeNivel from '../atoms/BadgeNivel';
+
+import { 
+  Flame, 
+  CheckCircle2, 
+  Eye, 
+  Navigation, 
+  Thermometer, 
+  Droplets, 
+  Wind, 
+  Truck,
+  MapPin
+} from 'lucide-react';
 
 // Fix de íconos por defecto de Leaflet con Vite
 delete L.Icon.Default.prototype._getIconUrl;
@@ -19,11 +32,12 @@ L.Icon.Default.mergeOptions({
 // Íconos personalizados por estado
 const crearIcono = (estado) => {
   const colores = {
-    activo:     { bg: '#ef4444', sombra: 'rgba(239,68,68,0.7)', emoji: '🔥' },
-    controlado: { bg: '#22c55e', sombra: 'rgba(34,197,94,0.5)', emoji: '✅' },
-    vigilancia: { bg: '#38bdf8', sombra: 'rgba(56,189,248,0.5)', emoji: '👁️' },
+    activo:     { bg: '#ef4444', sombra: 'rgba(239,68,68,0.7)', icon: <Flame size={20} color="white" /> },
+    controlado: { bg: '#22c55e', sombra: 'rgba(34,197,94,0.5)', icon: <CheckCircle2 size={20} color="white" /> },
+    vigilancia: { bg: '#38bdf8', sombra: 'rgba(56,189,248,0.5)', icon: <Eye size={20} color="white" /> },
   };
   const c = colores[estado] || colores.vigilancia;
+  const iconHtml = renderToStaticMarkup(c.icon);
 
   return L.divIcon({
     className: '',
@@ -37,11 +51,10 @@ const crearIcono = (estado) => {
         background:${c.bg}cc;
         border:2px solid ${c.bg};
         border-radius:50%;
-        font-size:18px;
         box-shadow: 0 0 14px ${c.sombra};
         animation: ${estado === 'activo' ? 'pulse-danger 1.5s infinite' : 'none'};
         cursor:pointer;
-      ">${c.emoji}</div>
+      ">${iconHtml}</div>
     `,
   });
 };
@@ -69,20 +82,12 @@ const onEachFeature = (feature, layer) => {
 
 const formatFecha = (iso) => new Date(iso).toLocaleString('es-CL', { dateStyle: 'short', timeStyle: 'short' });
 
-// Componente interno para centrar el mapa en un foco activo
-const MapCenterer = ({ center }) => {
-  const map = useMap();
-  useEffect(() => { map.setView(center, 8); }, [center]);
-  return null;
-};
-
 const MapaMonitoreo = ({ focos = [], geoJSON = null }) => {
-  // Centro: Sur de Chile
   const centroSurChile = [-39.8196, -72.9];
 
   return (
     <div style={{
-      borderRadius: 'var(--r-lg)',
+      borderRadius: 'var(--r-sm)', // Más cuadrado
       overflow: 'hidden',
       border: '1px solid var(--color-border)',
       boxShadow: 'var(--shadow-lg)',
@@ -90,10 +95,9 @@ const MapaMonitoreo = ({ focos = [], geoJSON = null }) => {
       <MapContainer
         center={centroSurChile}
         zoom={7}
-        style={{ height: 480, width: '100%' }}
+        style={{ height: 400, width: '100%' }} // Mapa más chico (400px)
         zoomControl={false}
       >
-        {/* Tile oscuro compatible con el tema */}
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://carto.com/">CARTO</a>'
@@ -102,7 +106,6 @@ const MapaMonitoreo = ({ focos = [], geoJSON = null }) => {
 
         <ZoomControl position="bottomright" />
 
-        {/* Capa GeoJSON de zonas de riesgo */}
         {geoJSON && (
           <GeoJSON
             key={JSON.stringify(geoJSON)}
@@ -112,7 +115,6 @@ const MapaMonitoreo = ({ focos = [], geoJSON = null }) => {
           />
         )}
 
-        {/* Marcadores de focos */}
         {focos.map((foco) => (
           <Marker
             key={foco.id}
@@ -121,29 +123,33 @@ const MapaMonitoreo = ({ focos = [], geoJSON = null }) => {
           >
             <Popup className="fire-popup">
               <div style={{ minWidth: 220, fontFamily: 'var(--font-sans)', color: 'var(--color-text)' }}>
-                <div style={{ fontWeight: 700, fontSize: '0.92rem', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  🔥 {foco.nombre}
+                <div style={{ fontWeight: 800, fontSize: '0.92rem', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--color-danger)' }}>
+                  <Flame size={16} /> {foco.nombre}
                 </div>
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '10px' }}>
                   <BadgeNivel nivel={foco.estado} />
                   <BadgeNivel nivel={foco.nivelRiesgo} />
                 </div>
                 <table style={{ width: '100%', fontSize: '0.78rem', borderCollapse: 'collapse' }}>
-                  {[
-                    ['📍 Región', foco.region],
-                    ['🔥 Hectáreas', `${foco.hectareasAfectadas} ha`],
-                    ['🌡️ Temperatura', `${foco.temperatura}°C`],
-                    ['💧 Humedad', `${foco.humedad}%`],
-                    ['💨 Viento', `${foco.velocidadViento} km/h`],
-                    ['🚒 Unidades', foco.unidadesAsignadas],
-                  ].map(([k, v]) => (
-                    <tr key={k} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                      <td style={{ padding: '3px 0', color: '#94a3b8', paddingRight: 8 }}>{k}</td>
-                      <td style={{ padding: '3px 0', fontWeight: 600 }}>{v}</td>
-                    </tr>
-                  ))}
+                  <tbody>
+                    {[
+                      { icon: <MapPin size={12} />, label: 'Región', value: foco.region },
+                      { icon: <Navigation size={12} />, label: 'Área', value: `${foco.hectareasAfectadas} ha` },
+                      { icon: <Thermometer size={12} />, label: 'Temp.', value: `${foco.temperatura}°C` },
+                      { icon: <Droplets size={12} />, label: 'Humedad', value: `${foco.humedad}%` },
+                      { icon: <Wind size={12} />, label: 'Viento', value: `${foco.velocidadViento} km/h` },
+                      { icon: <Truck size={12} />, label: 'Unidades', value: foco.unidadesAsignadas },
+                    ].map((row, i) => (
+                      <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                        <td style={{ padding: '4px 0', color: 'var(--color-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          {row.icon} <span>{row.label}</span>
+                        </td>
+                        <td style={{ padding: '4px 0', fontWeight: 700, textAlign: 'right' }}>{row.value}</td>
+                      </tr>
+                    ))}
+                  </tbody>
                 </table>
-                <div style={{ fontSize: '0.7rem', marginTop: '8px', color: '#64748b' }}>
+                <div style={{ fontSize: '0.65rem', marginTop: '10px', color: 'var(--color-muted)', textAlign: 'center', fontStyle: 'italic' }}>
                   Actualizado: {formatFecha(foco.ultimaActualizacion)}
                 </div>
               </div>
@@ -157,23 +163,21 @@ const MapaMonitoreo = ({ focos = [], geoJSON = null }) => {
         background: 'var(--color-surface)',
         borderTop: '1px solid var(--color-border)',
         padding: 'var(--sp-3) var(--sp-5)',
-        display: 'flex', gap: 'var(--sp-5)', flexWrap: 'wrap', alignItems: 'center',
+        display: 'flex', gap: 'var(--sp-6)', flexWrap: 'wrap', alignItems: 'center',
       }}>
-        <span style={{ fontSize: '0.75rem', color: 'var(--color-muted)', fontWeight: 600 }}>LEYENDA:</span>
+        <span style={{ fontSize: '0.7rem', color: 'var(--color-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Leyenda:</span>
         {[
-          { emoji: '🔥', label: 'Activo', color: '#ef4444' },
-          { emoji: '✅', label: 'Controlado', color: '#22c55e' },
-          { emoji: '👁️', label: 'Vigilancia', color: '#38bdf8' },
-        ].map(({ emoji, label, color }) => (
-          <span key={label} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.78rem', color: 'var(--color-text-2)' }}>
-            <span>{emoji}</span> <span style={{ color }}>{label}</span>
+          { icon: <Flame size={14} />, label: 'Activo', color: '#ef4444' },
+          { icon: <CheckCircle2 size={14} />, label: 'Controlado', color: '#22c55e' },
+          { icon: <Eye size={14} />, label: 'Vigilancia', color: '#38bdf8' },
+        ].map(({ icon, label, color }) => (
+          <span key={label} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.75rem', color: 'var(--color-text-2)', fontWeight: 600 }}>
+            <span style={{ color }}>{icon}</span> <span>{label}</span>
           </span>
         ))}
-        <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.78rem', color: '#ef4444' }}>
-          <span style={{ width: 16, height: 3, background: '#ef4444', display: 'inline-block', borderRadius: 2 }} /> Zona riesgo alto
-        </span>
-        <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.78rem', color: '#38bdf8' }}>
-          <span style={{ width: 16, height: 3, background: '#38bdf8', display: 'inline-block', borderRadius: 2, opacity: 0.6 }} /> Ruta evacuación
+        <div style={{ flex: 1 }} />
+        <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.75rem', color: 'var(--color-text-2)' }}>
+          <span style={{ width: 12, height: 12, border: '1px dashed #ef4444', background: 'rgba(239,68,68,0.1)', display: 'inline-block' }} /> Zona de Riesgo
         </span>
       </div>
     </div>
@@ -181,3 +185,4 @@ const MapaMonitoreo = ({ focos = [], geoJSON = null }) => {
 };
 
 export default MapaMonitoreo;
+

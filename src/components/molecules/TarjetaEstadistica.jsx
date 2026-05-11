@@ -1,12 +1,13 @@
 // TarjetaEstadistica — KPI card para el dashboard de monitoreo
 import React from 'react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
 const TarjetaEstadistica = ({ icono, valor, etiqueta, color = 'var(--color-primary)', tendencia }) => {
   return (
     <div className="animate-fade-up" style={{
       background: 'var(--grad-card)',
       border: '1px solid var(--color-border)',
-      borderRadius: 'var(--r-lg)',
+      borderRadius: 'var(--r-sm)', // Más cuadrado
       padding: 'var(--sp-6)',
       position: 'relative',
       overflow: 'hidden',
@@ -31,23 +32,27 @@ const TarjetaEstadistica = ({ icono, valor, etiqueta, color = 'var(--color-prima
       }} />
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--sp-3)' }}>
-        <span style={{ fontSize: '1.8rem' }}>{icono}</span>
+        <div style={{ color, background: `${color}15`, padding: '10px', borderRadius: 'var(--r-sm)', display: 'flex' }}>
+          {icono}
+        </div>
         {tendencia !== undefined && (
           <span style={{
-            fontSize: '0.75rem', fontWeight: 600,
+            fontSize: '0.75rem', fontWeight: 700,
             color: tendencia >= 0 ? 'var(--color-danger)' : 'var(--color-success)',
             background: tendencia >= 0 ? 'var(--color-danger-dim)' : 'var(--color-success-dim)',
-            padding: '2px 8px', borderRadius: 'var(--r-full)',
+            padding: '4px 10px', borderRadius: 'var(--r-sm)',
+            display: 'flex', alignItems: 'center', gap: '4px'
           }}>
-            {tendencia >= 0 ? '↑' : '↓'} {Math.abs(tendencia)}
+            {tendencia >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+            {Math.abs(tendencia)}%
           </span>
         )}
       </div>
 
-      <div style={{ fontSize: '2.2rem', fontWeight: 800, color, lineHeight: 1, marginBottom: 'var(--sp-1)' }}>
+      <div style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--color-text)', lineHeight: 1, marginBottom: 'var(--sp-1)' }}>
         {valor}
       </div>
-      <div style={{ fontSize: '0.82rem', color: 'var(--color-text-2)', fontWeight: 500 }}>
+      <div style={{ fontSize: '0.82rem', color: 'var(--color-text-2)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
         {etiqueta}
       </div>
     </div>
@@ -55,3 +60,4 @@ const TarjetaEstadistica = ({ icono, valor, etiqueta, color = 'var(--color-prima
 };
 
 export default TarjetaEstadistica;
+

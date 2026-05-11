@@ -1,76 +1,13 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frontend Rápido</title>
-    <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #f4f4f9; 
-            padding: 20px; 
-            display: flex;
-            justify-content: center;
-        }
-        .container { 
-            width: 100%;
-            max-width: 600px; 
-            background: white; 
-            padding: 30px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
-        }
-        h2 { margin-top: 0; color: #333; }
-        button { 
-            background-color: #007bff; 
-            color: white; 
-            border: none; 
-            padding: 12px 20px; 
-            cursor: pointer; 
-            border-radius: 6px; 
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        button:hover { background-color: #0056b3; }
-        #resultado { 
-            margin-top: 20px; 
-            padding: 15px; 
-            background: #282c34; 
-            color: #abb2bf;
-            border-radius: 6px; 
-            overflow-x: auto;
-            font-family: monospace;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2>Panel de Datos</h2>
-        <p>Conectando con el backend...</p>
-        <button id="btnCargar">Cargar Datos de la API</button>
-        <div id="resultado">Esperando acción...</div>
-    </div>
-
-    <script>
-        document.getElementById('btnCargar').addEventListener('click', () => {
-            const resultadoDiv = document.getElementById('resultado');
-            resultadoDiv.innerHTML = "Cargando respuesta...";
-
-            // Cambia esta URL por la de tu endpoint local (ej: http://localhost:8080/api/v1/datos)
-            // Recuerda tener configurado el @CrossOrigin en tu controller de Java
-            fetch('http://localhost:8080/api/endpoint')
-                .then(response => {
-                    if (!response.ok) throw new Error('Error en la red');
-                    return response.json();
-                })
-                .then(data => {
-                    resultadoDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    resultadoDiv.innerHTML = "<span style='color: #e06c75;'>Error al conectar con la API. Revisa la consola o los CORS.</span>";
-                });
-        });
-    </script>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>fronteddgyp</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

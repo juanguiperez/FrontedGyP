@@ -4,6 +4,9 @@
 // ============================================================
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import { loginService, registroService } from '../services/authService';
+
+
 
 const AuthContext = createContext(null);
 
@@ -37,25 +40,39 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
 
-  const login = useCallback(async (username, password) => {
+  const login = useCallback(async (email, password) => {
     setCargando(true);
     setError('');
 
-    // Simula latencia de red
-    await new Promise((r) => setTimeout(r, 900));
+    try {
+      // Llamada al servicio real
+      const userData = await loginService(email, password);
 
-    const found = MOCK_USERS.find(
-      (u) => u.username === username && u.password === password
-    );
-
-    if (found) {
-      const { password: _, ...userData } = found;
+      // Si llegamos aquí, el login fue exitoso
       setUsuario(userData);
       sessionStorage.setItem('gypUser', JSON.stringify(userData));
       setCargando(false);
       return true;
-    } else {
-      setError('Usuario o contraseña incorrectos.');
+    } catch (err) {
+      // Manejo de errores de la API
+      setError(err.message || 'Error de conexión con el servidor.');
+      setCargando(false);
+      return false;
+    }
+  }, []);
+
+
+  const registro = useCallback(async (datos) => {
+    setCargando(true);
+    setError('');
+    try {
+      const userData = await registroService(datos);
+      setUsuario(userData);
+      sessionStorage.setItem('gypUser', JSON.stringify(userData));
+      setCargando(false);
+      return true;
+    } catch (err) {
+      setError(err.message || 'Error al crear la cuenta.');
       setCargando(false);
       return false;
     }
@@ -69,7 +86,8 @@ export const AuthProvider = ({ children }) => {
   const esAdmin = usuario?.rol === 'administrador';
 
   return (
-    <AuthContext.Provider value={{ usuario, login, logout, esAdmin, error, cargando }}>
+    <AuthContext.Provider value={{ usuario, login, registro, logout, esAdmin, error, cargando }}>
+
       {children}
     </AuthContext.Provider>
   );
