@@ -1,16 +1,28 @@
-# React + Vite
+# FrontedGyP
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este es el frontend del proyecto FrontedGyP.
 
-Currently, two official plugins are available:
+## Requisitos previos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Node.js (versión 16 o superior recomendada)
+- npm (gestor de paquetes de Node)
 
-## React Compiler
+## Instalación
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Clona el repositorio o abre la carpeta del proyecto.
+2. Abre una terminal en la carpeta raíz del proyecto.
+3. Ejecuta el siguiente comando para instalar las dependencias:
 
-## Expanding the ESLint configuration
+```bash
+npm install
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Ejecución del proyecto
+
+Para ejecutar el proyecto en entorno local (modo desarrollo), utiliza el siguiente comando:
+
+```bash
+npm run dev
+```
+
+Esto iniciará un servidor local. Abre tu navegador y ve a la dirección que aparece en la terminal (usualmente http://localhost:5173) para ver la aplicación en funcionamiento.
