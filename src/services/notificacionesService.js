@@ -1,8 +1,3 @@
-// ============================================================
-// SERVICIO — Notificaciones
-// Endpoint real: reemplaza BASE_URL con tu microservicio
-// ============================================================
-
 const BASE_URL = 'http://localhost:8081/api/notificaciones'; // 🔁 Reemplazar
 
 const MOCK_NOTIFICACIONES = [

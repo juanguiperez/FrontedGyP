@@ -1,8 +1,5 @@
 const BASE_URL = 'https://usuariosgyp.onrender.com/api/usuarios';
 
-/**
- * Realiza la petición de login al backend
- */
 export const loginService = async (email, password) => {
   try {
     const response = await fetch(`${BASE_URL}/login`, {
@@ -21,9 +18,6 @@ export const loginService = async (email, password) => {
   }
 };
 
-/**
- * Realiza la petición de registro al backend
- */
 export const registroService = async (datos) => {
   try {
     const response = await fetch(`${BASE_URL}/registro`, {
@@ -43,11 +37,7 @@ export const registroService = async (datos) => {
 };
 
 
-/**
- * Opcional: Validar token o sesión actual
- */
 export const validarSesion = async (token) => {
-  // Implementar si tienes validación de JWT en el backend
   return true;
 };
 

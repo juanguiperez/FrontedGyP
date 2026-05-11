@@ -1,11 +1,5 @@
-// ============================================================
-// SERVICIO — Monitoreo de Focos de Incendio
-// Endpoint real: reemplaza BASE_URL con tu microservicio
-// ============================================================
+const BASE_URL = 'http://localhost:8080/api/monitoreo';
 
-const BASE_URL = 'http://localhost:8080/api/monitoreo'; // 🔁 Reemplazar
-
-// Datos mock — Sur de Chile (Araucanía, Los Lagos, Los Ríos)
 const MOCK_FOCOS = [
   {
     id: 1,

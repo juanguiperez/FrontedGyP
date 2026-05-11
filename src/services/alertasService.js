@@ -1,8 +1,3 @@
-// ============================================================
-// SERVICIO — Alertas
-// Endpoint real: reemplaza BASE_URL con tu microservicio
-// ============================================================
-
 const BASE_URL = 'http://localhost:8082/api/alertas'; // 🔁 Reemplazar
 
 const MOCK_ALERTAS = [
